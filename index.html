@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>极简批量裁切 | Batch Cropper</title>
+    <!-- 第三方库 -->
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- 顶栏简约 -->
+        <div class="app-bar">
+            <div class="logo">
+                <span class="logo-icon">✂️</span>
+                <h1 data-key="title">BatchCraft · 批量裁切工坊</h1>
+            </div>
+            <div class="lang-group">
+                <button class="lang-btn" data-lang="zh">中文</button>
+                <button class="lang-btn" data-lang="en">English</button>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <!-- 左侧：参考区 -->
+            <div class="card crop-card">
+                <div class="card-header">
+                    <span data-key="cropRefTitle">🎯 统一裁剪参考</span>
+                    <span class="badge" data-key="cropTip">调整框体 → 批量应用</span>
+                </div>
+                <div class="crop-stage">
+                    <div class="crop-viewport">
+                        <img id="refImage" src="https://placehold.co/800x500/eef2ff/8b9dc3?text=点击列表图片设为参考" alt="reference">
+                    </div>
+                </div>
+                <div class="crop-toolbar">
+                    <button id="resetCropBtn" class="icon-btn" data-key="resetCrop">⟳ 重置</button>
+                    <button id="rotateLeftBtn" class="icon-btn" data-key="rotateLeft">↩ 左旋</button>
+                    <button id="rotateRightBtn" class="icon-btn" data-key="rotateRight">↪ 右旋</button>
+                </div>
+                <div class="card-tip" data-key="cropDesc">拖动/缩放裁剪框，所有图片按相同比例区域输出</div>
+            </div>
+
+            <!-- 右侧：配置+操作区 -->
+            <div class="card config-card">
+                <div class="card-header">
+                    <span data-key="outputSettings">⚙️ 批量输出设定</span>
+                </div>
+                <div class="config-group">
+                    <label data-key="formatLabel">输出格式</label>
+                    <select id="batchFormat" class="select-modern">
+                        <option value="image/jpeg">JPEG (.jpg)</option>
+                        <option value="image/png">PNG (.png)</option>
+                        <option value="image/webp">WebP (.webp)</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label data-key="qualityLabel">画质 (JPEG / WebP)</label>
+                    <div class="slider-group">
+                        <input type="range" id="qualitySlider" min="0.1" max="1" step="0.01" value="0.92">
+                        <span id="qualityValue" class="slider-value">92%</span>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="applyBatchBtn" class="btn-primary" data-key="batchCropConvert">✨ 批量裁剪并转换 ✨</button>
+                    <button id="downloadZipBtn" class="btn-secondary" disabled data-key="downloadZip">📦 打包下载 ZIP</button>
+                </div>
+                <div class="info-hint" data-key="outputSizeHint">✔ 输出尺寸 = 裁剪区域原始像素，无缩放</div>
+            </div>
+        </div>
+
+        <!-- 图片管理区 -->
+        <div class="gallery-section">
+            <div class="gallery-header">
+                <div class="title-wrap">
+                    <span data-key="imageListTitle">📷 待处理图片</span>
+                    <span class="count-badge" id="fileCountBadge">0</span>
+                </div>
+                <div class="upload-wrap">
+                    <input type="file" id="fileUpload" multiple accept="image/jpeg,image/png,image/webp,image/bmp,image/gif">
+                    <label for="fileUpload" class="upload-btn" data-key="uploadBtn">+ 批量上传</label>
+                    <button id="clearAllBtn" class="ghost-btn" data-key="clearAll">清空全部</button>
+                </div>
+            </div>
+            <div class="image-grid" id="imageGrid">
+                <div class="placeholder" data-key="emptyList">暂无图片，点击上方按钮上传</div>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <div class="result-header">
+                <span data-key="resultTitle">✅ 处理后结果 (点击单张下载)</span>
+            </div>
+            <div class="result-grid" id="resultGrid">
+                <div class="placeholder" data-key="noResult">尚未生成，点击「批量裁剪并转换」</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
