@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+    <title>图片太大怎么压缩？JPEG/WebP 格式转换与画质调整指南 – CropCraft Blog</title>
+    <meta name="description" content="图片太大无法上传？免费在线压缩图片，JPEG/WebP格式转换，实时调整画质，预估文件大小。CropCraft裁剪工坊帮你快速缩小图片体积。">
+    <style>
+        :root {
+            --bg: #f3f6fc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #5b6e8c;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --pill-bg: #eef2ff;
+            --radius: 20px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px;
+            color: var(--text);
+        }
+        .container { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+        .top-bar {
+            background: var(--card-bg); border-radius: 28px; padding:14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .logo a {
+            font-size:1.35rem; font-weight:650; text-decoration:none;
+            background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .nav-links { display:flex; gap:12px; }
+        .nav-links a {
+            background:var(--pill-bg); padding:8px 18px; border-radius:40px;
+            text-decoration:none; color:var(--text); font-weight:500; font-size:0.85rem;
+            transition:0.2s;
+        }
+        .nav-links a:hover { background:#dde4ff; }
+        .article {
+            background: var(--card-bg); border-radius: 24px; padding:28px;
+            box-shadow: var(--shadow);
+        }
+        .article h1 { font-size:1.8rem; margin-bottom:8px; }
+        .article .date { color: var(--text-secondary); font-size:0.85rem; margin-bottom:24px; }
+        .article p { line-height:1.8; margin-bottom:1.2em; color: #334155; }
+        .article h2 { margin:1.5em 0 0.5em; font-size:1.3rem; }
+        .article ul { margin:0.8em 0; padding-left:24px; }
+        .article ul li { margin-bottom:0.5em; color: #334155; }
+        .cta-box {
+            background: #f0f9ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+            text-align: center;
+        }
+        .cta-box p { margin-bottom: 12px; }
+        .cta-box a {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .cta-box a:hover { background: #1d4ed8; }
+        .footer {
+            text-align: center; font-size:0.75rem; color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="logo"><a href="../index.html">✂️ CropCraft · 裁剪工坊</a></div>
+        <div class="nav-links">
+            <a href="../blog.html">← 返回博客</a>
+            <a href="../index.html">🔧 回到工具</a>
+        </div>
+    </div>
+
+    <article class="article">
+        <h1>图片太大怎么压缩？JPEG/WebP 格式转换与画质调整指南</h1>
+        <div class="date">2026年6月16日</div>
+
+        <p>上传证件照时提示文件过大？网页加载慢拖累用户体验？面对动辄数 MB 的照片，只需简单几步就能显著减小体积。CropCraft 裁剪工坊内置了格式转换和画质调节功能，让你在线轻松压缩图片，同时保持清晰度。</p>
+
+        <h2>选择正确的输出格式</h2>
+        <p>不同格式对文件大小的影响截然不同：</p>
+        <ul>
+            <li><strong>JPEG</strong> – 最适合照片和复杂色彩图片。通过有损压缩大幅降低体积，推荐画质 85% 左右。</li>
+            <li><strong>WebP</strong> – 兼顾小体积与高画质，同等质量下比 JPEG 小 25%~35%，且支持透明背景，是网页图片的首选。</li>
+            <li><strong>PNG</strong> – 无损压缩，文件较大。仅在需要透明背景或最高保真度时使用，不适合压缩照片。</li>
+        </ul>
+        <p>在工坊中，你可以随时切换格式，右侧的“预估文件大小”会实时更新，帮助你快速决策。</p>
+
+        <h2>调整画质，掌控文件大小</h2>
+        <p>选择 JPEG 或 WebP 后，拖动「画质」滑块即可在 10% 至 100% 之间调节。数值越低，文件越小，但画质也会下降。日常使用推荐 80%~95%，既保证视觉质量，又有效压缩。对于纯文本截图，甚至可以降到 60% 以下，文件体积会明显瘦身。</p>
+
+        <h2>结合裁剪，进一步减少尺寸</h2>
+        <p>除了格式与画质，图片的像素尺寸也直接影响文件大小。裁掉不需要的边缘、缩小分辨率，往往能额外压缩 30% 以上。在工坊中裁剪后，输出尺寸会自动更新，预估大小也会一并变化，让你对最终结果一目了然。</p>
+
+        <p>只需上传 → 裁剪（可选）→ 选格式 → 调画质 → 下载，五步完成压缩，全程免费在线完成。</p>
+
+        <div class="cta-box">
+            <p>🚀 想要快速压缩图片？试试 CropCraft 裁剪工坊吧！</p>
+            <a href="../index.html">✂️ 开始压缩图片</a>
+        </div>
+    </article>
+
+    <div class="footer">
+        © 2026 CropCraft. All rights reserved.
+    </div>
+</div>
+</body>
+</html>
