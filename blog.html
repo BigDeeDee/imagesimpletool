@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+    <title>Blog · CropCraft 裁剪工坊</title>
+    <style>
+        :root {
+            --bg: #f3f6fc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #5b6e8c;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --pill-bg: #eef2ff;
+            --radius: 20px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-lg: 0 12px 32px -8px rgba(0,0,0,0.10);
+            --transition: 0.2s;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px;
+            color: var(--text);
+            min-height: 100vh;
+        }
+        .container { max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+        .top-bar {
+            background: var(--card-bg); border-radius: 28px; padding:14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .logo a {
+            font-size:1.35rem; font-weight:650; text-decoration:none;
+            background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .back-btn {
+            background:var(--pill-bg); padding:8px 18px; border-radius:40px;
+            text-decoration:none; color:var(--text); font-weight:500; font-size:0.85rem;
+            transition:var(--transition);
+        }
+        .back-btn:hover { background:#dde4ff; }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .post-card {
+            background: var(--card-bg); border-radius: 24px; padding:20px;
+            box-shadow: var(--shadow-lg); transition: var(--transition);
+            text-decoration: none; color: inherit; display: block;
+            border: 1px solid transparent;
+        }
+        .post-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+        .post-card h2 {
+            font-size:1.15rem; margin-bottom:8px; color: var(--text);
+        }
+        .post-card .date {
+            font-size:0.75rem; color: var(--text-secondary); margin-bottom:12px;
+        }
+        .post-card p {
+            font-size:0.85rem; color: #475569; line-height:1.5;
+        }
+        .footer {
+            text-align: center; font-size:0.75rem; color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="logo"><a href="index.html">✂️ CropCraft · 裁剪工坊</a></div>
+        <a href="index.html" class="back-btn">← 返回工具</a>
+    </div>
+
+    <h1 style="font-size:1.8rem; font-weight:650;">📝 博客文章</h1>
+
+    <div class="blog-grid">
+        <a href="posts/post-1.html" class="post-card">
+            <h2>如何用裁剪工坊快速统一图片比例</h2>
+            <div class="date">2026-06-10</div>
+            <p>学习如何锁定固定比例（如1:1、16:9）并批量调整，让所有图片保持一致的视觉风格。</p>
+        </a>
+        <a href="posts/post-2.html" class="post-card">
+            <h2>设计美观水印的5个技巧</h2>
+            <div class="date">2026-06-08</div>
+            <p>掌握颜色、透明度、字号和位置的搭配秘诀，让你的水印既保护版权又不破坏画面。</p>
+        </a>
+        <a href="posts/post-3.html" class="post-card">
+            <h2>JPEG vs PNG vs WebP：如何选择输出格式</h2>
+            <div class="date">2026-06-05</div>
+            <p>深入分析三种图片格式的特点与适用场景，帮你做出最佳选择，兼顾画质与文件大小。</p>
+        </a>
+    </div>
+
+    <div class="footer">
+        © 2026 CropCraft. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

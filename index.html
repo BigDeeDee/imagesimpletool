@@ -11,9 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
-    <title>CropCraft · 裁剪工坊</title>
+    <title>CropCraft · 裁剪工坊 | 单张精裁 · 水印实时预览</title>
     <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js">
+    </script>
     <style>
         :root {
             --bg: #f3f6fc;
@@ -26,11 +27,15 @@
             --pill-bg: #eef2ff;
             --radius: 20px;
             --radius-sm: 12px;
-            --shadow: 0 4px 16px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04);
-            --shadow-lg: 0 12px 32px -8px rgba(0,0,0,0.10);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 32px -8px rgba(0, 0, 0, 0.10);
             --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: var(--bg);
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -39,662 +44,1225 @@
             min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
-        .app { max-width:1300px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+        .app {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
         .top-bar {
-            display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
-            background: var(--card-bg); padding:14px 24px; border-radius:28px; box-shadow:var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 14px 24px;
+            border-radius: 28px;
+            box-shadow: var(--shadow);
         }
         .logo h1 {
-            font-size:1.35rem; font-weight:650;
+            font-size: 1.35rem;
+            font-weight: 650;
             background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
-            background-clip: text; -webkit-background-clip: text; color: transparent; letter-spacing:-0.01em;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.01em;
         }
-        .lang-switch { display:flex; gap:8px; }
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .blog-link {
+            text-decoration: none;
+            color: var(--text);
+            background: var(--pill-bg);
+            padding: 7px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .blog-link:hover {
+            background: #dde4ff;
+        }
+        .lang-switch {
+            display: flex;
+            gap: 8px;
+        }
         .lang-btn {
-            background:var(--pill-bg); border:none; padding:7px 18px; border-radius:40px;
-            font-weight:500; font-size:0.85rem; cursor:pointer; transition:var(--transition); color:var(--text);
+            background: var(--pill-bg);
+            border: none;
+            padding: 7px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
         }
-        .lang-btn.active { background:#1f2b3c; color:#fff; }
-        .main-grid { display:grid; grid-template-columns:1.35fr 1fr; gap:20px; }
-        @media (max-width:850px) { .main-grid { grid-template-columns:1fr; } body { padding:12px 8px; } }
+        .lang-btn.active {
+            background: #1f2b3c;
+            color: #fff;
+        }
+        .lang-btn:hover:not(.active) {
+            background: #dde4ff;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 850px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 12px 8px;
+            }
+        }
         .card {
-            background:var(--card-bg); border-radius:24px; box-shadow:var(--shadow-lg);
-            padding:18px 20px; border:1px solid transparent;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 18px 20px;
+            border: 1px solid transparent;
         }
-        .card-header { font-weight:650; font-size:1.05rem; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+        .card-header {
+            font-weight: 650;
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         .crop-viewport-wrapper {
-            position:relative; background:#0f1419; border-radius:18px; min-height:320px;
-            display:flex; align-items:center; justify-content:center; overflow:hidden; flex:1;
+            position: relative;
+            background: #0f1419;
+            border-radius: 18px;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex: 1;
         }
-        .crop-viewport-wrapper.has-image { background:#111418; }
-        #refImage { max-width:100%; display:block; border-radius:4px; user-select:none; }
+        .crop-viewport-wrapper.has-image {
+            background: #111418;
+        }
+        .crop-viewport-wrapper.drop-highlight {
+            box-shadow: 0 0 0 3px var(--accent), 0 0 32px rgba(37, 99, 235, 0.25);
+        }
+        #refImage {
+            max-width: 100%;
+            display: block;
+            border-radius: 4px;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
         .upload-overlay {
-            position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
-            justify-content:center; pointer-events:none; z-index:3; color:#8ba0dc; gap:8px;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 3;
+            color: #8ba0dc;
+            gap: 8px;
+            transition: opacity 0.25s;
         }
-        .upload-overlay.hidden { display:none; }
+        .upload-overlay.hidden {
+            opacity: 0;
+        }
+        .upload-overlay .upload-icon {
+            font-size: 3rem;
+            line-height: 1;
+        }
+        .upload-overlay .upload-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .upload-overlay .upload-sub {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
         .watermark-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
         .watermark-draggable {
-            position: absolute; cursor:grab; pointer-events:auto; white-space:nowrap;
-            font-weight:bold; text-shadow:0 2px 6px rgba(0,0,0,0.6); transform-origin:center;
+            position: absolute;
+            cursor: grab;
+            pointer-events: auto;
+            white-space: nowrap;
+            font-weight: bold;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            transform-origin: center;
         }
-        .watermark-draggable:active { cursor:grabbing; }
-        .crop-toolbar { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+        .watermark-draggable:active {
+            cursor: grabbing;
+        }
+        .crop-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
         .icon-btn {
-            background:var(--pill-bg); border:none; padding:8px 16px; border-radius:40px;
-            font-weight:500; font-size:0.82rem; cursor:pointer; transition:var(--transition);
-            color:var(--text); display:flex; align-items:center; gap:5px;
+            background: var(--pill-bg);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        .icon-btn:hover { background:#dde4ff; }
-        .icon-btn.danger { background:#fee2e2; color:#b91c1c; }
-        .aspect-select, .select-modern {
-            padding:8px 14px; border-radius:40px; border:1px solid var(--border);
-            background:#fff; font-size:0.82rem; font-weight:500; cursor:pointer;
+        .icon-btn:hover {
+            background: #dde4ff;
+            transform: translateY(-1px);
         }
-        .custom-ratio-wrap { display:none; gap:6px; align-items:center; background:var(--pill-bg); padding:5px 8px; border-radius:40px; }
-        .custom-ratio-wrap input { width:52px; border-radius:20px; padding:6px; border:1px solid var(--border); text-align:center; }
-        .btn-sm { padding:6px 12px; border-radius:20px; background:var(--accent); color:#fff; border:none; cursor:pointer; }
-        .btn-primary {
-            background:var(--accent); color:#fff; border:none; padding:13px; border-radius:40px;
-            font-weight:650; font-size:0.95rem; cursor:pointer; width:100%; transition:var(--transition);
+        .icon-btn:active {
+            transform: scale(0.97);
         }
-        .btn-primary:disabled { background:#cbd5e1; cursor:not-allowed; }
+        .icon-btn.danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        .icon-btn.danger:hover {
+            background: #fecaca;
+        }
+        .icon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .icon-btn:disabled:hover {
+            background: var(--pill-bg);
+            transform: none;
+        }
+        .aspect-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .aspect-select {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .custom-ratio-wrap {
+            display: none;
+            gap: 6px;
+            align-items: center;
+            background: var(--pill-bg);
+            padding: 5px 8px;
+            border-radius: 40px;
+        }
+        .custom-ratio-wrap input {
+            width: 52px;
+            border-radius: 20px;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            font-size: 0.78rem;
+            text-align: center;
+            background: #fff;
+        }
+        .custom-ratio-wrap span {
+            font-weight: 600;
+            color: #64748b;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 500;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-sm:hover {
+            background: var(--accent-hover);
+        }
         .config-group {
-            margin-bottom: 18px;  /* 增加配置组之间的间距 */
+            margin-bottom: 18px;
         }
         .config-group label {
-            display:block; font-weight:600; margin-bottom:6px; font-size:0.8rem; color:#475569;
-            text-transform:uppercase; letter-spacing:0.03em;
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .select-modern {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            background: #fff;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text);
         }
         .slider-row {
-            display:flex; align-items:center; gap:12px;
-            margin-top: 6px;   /* 让滑块与上方标签之间更舒适 */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
         }
-        .slider-row input[type="range"] { flex:1; accent-color:var(--accent); }
-        .slider-val { background:var(--pill-bg); padding:4px 12px; border-radius:20px; font-size:0.78rem; }
-        .watermark-section { margin-top:8px; border-top:1px dashed var(--border); padding-top:16px; }
-        .estimate-box {
-            background:#f0f9ff; border-radius:16px; padding:10px 14px;
-            display:flex; justify-content:space-between; align-items:center;
-            font-size:0.75rem; color:#1e40af;
-            margin-top: 12px;   /* 与画质滑块组之间增加间距 */
+        .slider-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent);
         }
-        .estimate-box span:last-child { font-weight:700; }
-        .result-section { background:var(--card-bg); border-radius:24px; padding:18px 20px; }
-        .result-placeholder { text-align:center; padding:32px 20px; color:#8ba0bc; }
-        .result-content { display:none; align-items:center; gap:20px; flex-wrap:wrap; }
-        .result-content.visible { display:flex; }
-        .result-preview-wrap img { max-width:220px; max-height:180px; border-radius:10px; }
-        .btn-download {
-            background:#10b981; color:#fff; border:none; padding:11px 22px; border-radius:40px;
-            font-weight:650; cursor:pointer;
+        .slider-val {
+            background: var(--pill-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            min-width: 44px;
+            text-align: center;
+        }
+        .slider-val.disabled {
+            opacity: 0.4;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 40px;
+            font-weight: 650;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .btn-primary:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .info-hint {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        .crop-size-indicator {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+            border: 1px dashed var(--border);
+            margin-top: 8px;
+        }
+        .crop-size-indicator strong {
+            color: var(--text);
+            font-weight: 650;
+        }
+        .watermark-section {
+            margin-top: 8px;
+            border-top: 1px dashed var(--border);
+            padding-top: 16px;
+        }
+        .watermark-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .watermark-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .watermark-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         .watermark-row {
-            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .watermark-row label {
-            min-width: 60px; font-size: 0.75rem; color: #475569; font-weight: 500;
+            min-width: 60px;
+            font-size: 0.75rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        .watermark-row input[type="text"],
+        .watermark-row select {
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            background: #fff;
+        }
+        .watermark-row input[type="color"] {
+            width: 40px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            background: #fff;
+            padding: 2px;
+        }
+        .watermark-row input[type="range"] {
+            flex: 1;
+            accent-color: var(--accent);
+        }
+        .estimate-box {
+            background: #f0f9ff;
+            border-radius: 16px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            color: #1e40af;
+            margin-top: 12px;
+        }
+        .estimate-box span:last-child {
+            font-weight: 700;
+        }
+        .result-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 18px 20px;
+            min-height: 100px;
+        }
+        .result-placeholder {
+            text-align: center;
+            padding: 32px 20px;
+            color: #8ba0bc;
+            font-size: 0.85rem;
+        }
+        .result-content {
+            display: none;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .result-content.visible {
+            display: flex;
+        }
+        .result-preview-wrap {
+            flex-shrink: 0;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 8px;
+            border: 1px solid var(--border);
+        }
+        .result-preview-wrap img {
+            max-width: 220px;
+            max-height: 180px;
+            border-radius: 10px;
+            display: block;
+            object-fit: contain;
+        }
+        .result-info {
+            flex: 1;
+            min-width: 160px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .result-filename {
+            font-weight: 600;
+            font-size: 0.85rem;
+            word-break: break-all;
+        }
+        .result-meta {
+            font-size: 0.72rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        .btn-download {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 40px;
+            font-weight: 650;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            align-self: flex-start;
+        }
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+        }
+        .btn-download:active {
+            transform: scale(0.97);
+        }
+        @media (max-width: 600px) {
+            .result-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .result-preview-wrap img {
+                max-width: 100%;
+                max-height: 240px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="app">
-    <div class="top-bar">
-        <div class="logo"><h1>✂️ CropCraft · 裁剪工坊</h1></div>
-        <div class="lang-switch">
-            <button class="lang-btn active" data-lang="zh">中文</button>
-            <button class="lang-btn" data-lang="en">English</button>
+    <div class="app">
+        <div class="top-bar">
+            <div class="logo">
+                <h1>✂️ CropCraft · 裁剪工坊</h1>
+            </div>
+            <div class="top-bar-right">
+                <a href="blog.html" class="blog-link">📝 Blog</a>
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="zh">中文</button>
+                    <button class="lang-btn" data-lang="en">English</button>
+                </div>
+            </div>
+        </div>
+        <div class="main-grid">
+            <div class="card crop-card">
+                <div class="card-header">
+                    <span>🎯</span> <span data-zh="裁剪作业框" data-en="Crop Workspace">裁剪作业框</span>
+                    <span style="font-weight:400;font-size:0.7rem;color:#8ba0bc;margin-left:auto;" id="cropSizeIndicator"></span>
+                </div>
+                <div class="crop-viewport-wrapper" id="cropWrapper">
+                    <img id="refImage" src="" alt="crop-target" style="display:none;">
+                    <div class="upload-overlay" id="uploadOverlay">
+                        <span class="upload-icon">📤</span>
+                        <span class="upload-text" data-zh="点击或拖拽图片到此处" data-en="Click or drag image here">点击或拖拽图片到此处</span>
+                        <span class="upload-sub" data-zh="支持 JPG / PNG / WebP / BMP / GIF" data-en="Supports JPG / PNG / WebP / BMP / GIF">支持 JPG / PNG / WebP / BMP / GIF</span>
+                    </div>
+                    <div class="watermark-overlay" id="watermarkOverlay" style="display:none;">
+                        <div class="watermark-draggable" id="watermarkDraggable">© 我的水印</div>
+                    </div>
+                </div>
+                <input type="file" id="fileUpload" accept="image/jpeg,image/png,image/webp,image/bmp,image/gif" style="display:none;">
+                <div class="crop-toolbar">
+                    <button id="uploadBtn" class="icon-btn">📁 <span data-zh="上传图片" data-en="Upload">上传图片</span></button>
+                    <button id="resetCropBtn" class="icon-btn" disabled>⟳ <span data-zh="重置" data-en="Reset">重置</span></button>
+                    <button id="rotateLeftBtn" class="icon-btn" disabled>↩ <span data-zh="左旋" data-en="RotL">左旋</span></button>
+                    <button id="rotateRightBtn" class="icon-btn" disabled>↪ <span data-zh="右旋" data-en="RotR">右旋</span></button>
+                    <button id="removeImageBtn" class="icon-btn danger" disabled>✕ <span data-zh="移除" data-en="Remove">移除</span></button>
+                </div>
+                <div class="aspect-row">
+                    <span style="font-weight:600;font-size:0.8rem;">📐 <span data-zh="比例：" data-en="Ratio:">比例：</span></span>
+                    <select id="aspectSelect" class="aspect-select">
+                        <option value="free" data-zh="自由 (无限制)" data-en="Free (unlocked)">自由 (无限制)</option>
+                        <option value="1:1">1:1 (正方形)</option>
+                        <option value="4:3">4:3 (经典)</option>
+                        <option value="16:9">16:9 (宽屏)</option>
+                        <option value="3:2">3:2 (相机)</option>
+                        <option value="2:3">2:3 (竖幅)</option>
+                        <option value="custom" data-zh="自定义比例" data-en="Custom ratio">自定义比例</option>
+                    </select>
+                    <div class="custom-ratio-wrap" id="customRatioWrap">
+                        <input type="number" id="customW" placeholder="宽" step="0.1" value="16" min="0.1">
+                        <span>:</span>
+                        <input type="number" id="customH" placeholder="高" step="0.1" value="9" min="0.1">
+                        <button id="applyCustomAspect" class="btn-sm">应用</button>
+                    </div>
+                </div>
+                <div class="crop-size-indicator" id="cropSizeDetail" style="display:none;">
+                    📏 <span data-zh="裁剪输出尺寸：" data-en="Output size:">裁剪输出尺寸：</span><strong id="cropSizePixels">—</strong> px
+                </div>
+            </div>
+            <div class="card config-card">
+                <div class="card-header"><span>⚙️</span> <span data-zh="输出设定" data-en="Output Settings">输出设定</span></div>
+                <div class="config-group">
+                    <label data-zh="输出格式" data-en="Output Format">输出格式</label>
+                    <select id="batchFormat" class="select-modern">
+                        <option value="image/jpeg">JPEG (.jpg)</option>
+                        <option value="image/png">PNG (.png)</option>
+                        <option value="image/webp">WebP (.webp)</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label><span data-zh="画质" data-en="Quality">画质</span> <span id="qualityLabelSuffix">(JPEG / WebP)</span></label>
+                    <div class="slider-row">
+                        <input type="range" id="qualitySlider" min="0.1" max="1" step="0.01" value="0.92">
+                        <span id="qualityValue" class="slider-val">92%</span>
+                    </div>
+                </div>
+                <div class="estimate-box" id="estimateBox">
+                    <span data-zh="预估文件大小" data-en="Est. file size">预估文件大小</span>
+                    <span id="estimateSizeValue">— KB</span>
+                </div>
+                <div class="watermark-section">
+                    <div class="watermark-toggle">
+                        <input type="checkbox" id="watermarkEnable">
+                        <label for="watermarkEnable" style="font-weight:600;font-size:0.9rem;"><span data-zh="添加水印" data-en="Add Watermark">添加水印</span></label>
+                    </div>
+                    <div class="watermark-options" id="watermarkOptions" style="display:none;">
+                        <div class="watermark-row">
+                            <label data-zh="文字" data-en="Text">文字</label>
+                            <input type="text" id="watermarkText" value="© 我的水印" style="flex:1;">
+                        </div>
+                        <div class="watermark-row">
+                            <label data-zh="位置" data-en="Position">位置</label>
+                            <select id="watermarkPosition">
+                                <option value="bottom-right" data-zh="右下" data-en="Bottom Right">右下</option>
+                                <option value="bottom-left" data-zh="左下" data-en="Bottom Left">左下</option>
+                                <option value="top-right" data-zh="右上" data-en="Top Right">右上</option>
+                                <option value="top-left" data-zh="左上" data-en="Top Left">左上</option>
+                                <option value="center" data-zh="居中" data-en="Center">居中</option>
+                            </select>
+                        </div>
+                        <div class="watermark-row">
+                            <label data-zh="字号" data-en="Font size">字号</label>
+                            <input type="range" id="watermarkFontSize" min="12" max="80" value="24" step="1">
+                            <span id="watermarkFontSizeVal" class="slider-val">24px</span>
+                        </div>
+                        <div class="watermark-row">
+                            <label data-zh="旋转" data-en="Rotate">旋转</label>
+                            <input type="range" id="watermarkRotation" min="-180" max="180" value="0" step="1">
+                            <span id="watermarkRotationVal" class="slider-val">0°</span>
+                        </div>
+                        <div class="watermark-row">
+                            <label data-zh="颜色" data-en="Color">颜色</label>
+                            <input type="color" id="watermarkColor" value="#ffffff">
+                            <label data-zh="透明度" data-en="Opacity" style="margin-left:8px;">透明度</label>
+                            <input type="range" id="watermarkOpacity" min="0.1" max="1" step="0.05" value="0.7">
+                            <span id="watermarkOpacityVal" class="slider-val">70%</span>
+                        </div>
+                        <button id="resetWatermarkPosition" class="icon-btn" style="align-self:flex-start;">📍 <span data-zh="重置位置" data-en="Reset Pos">重置位置</span></button>
+                        <small style="color:#64748b;font-size:0.7rem;" data-zh="💡 也可直接拖拽水印文字调整位置" data-en="💡 Or drag the watermark to reposition">💡 也可直接拖拽水印文字调整位置</small>
+                    </div>
+                </div>
+                <button id="applyCropBtn" class="btn-primary" disabled>✨ <span data-zh="裁剪并转换" data-en="Crop & Convert">裁剪并转换</span> ✨</button>
+                <div class="info-hint" data-zh="✔ 输出尺寸 = 裁剪区域原始像素，水印实时预览" data-en="✔ Output = crop area native pixels, watermark live preview">✔ 输出尺寸 = 裁剪区域原始像素，水印实时预览</div>
+            </div>
+        </div>
+        <div class="result-section" id="resultSection">
+            <div class="card-header">✅ <span data-zh="处理结果" data-en="Result">处理结果</span></div>
+            <div class="result-placeholder" id="resultPlaceholder" data-zh="尚未处理，调整裁剪框后点击「裁剪并转换」" data-en="Not processed yet. Adjust crop & click 'Crop & Convert'.">尚未处理，调整裁剪框后点击「裁剪并转换」</div>
+            <div class="result-content" id="resultContent">
+                <div class="result-preview-wrap"><img id="resultPreviewImg" src="" alt="result"></div>
+                <div class="result-info">
+                    <div class="result-filename" id="resultFilename"></div>
+                    <div class="result-meta" id="resultMeta"></div>
+                    <button class="btn-download" id="downloadBtn">📥 <span data-zh="下载图片" data-en="Download">下载图片</span></button>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="main-grid">
-        <div class="card crop-card">
-            <div class="card-header"><span>🎯</span> <span data-zh="裁剪作业框" data-en="Crop Workspace">裁剪作业框</span><span style="font-weight:400;font-size:0.7rem;color:#8ba0bc;margin-left:auto;" id="cropSizeIndicator"></span></div>
-            <div class="crop-viewport-wrapper" id="cropWrapper">
-                <img id="refImage" src="" alt="target" style="display:none;">
-                <div class="upload-overlay" id="uploadOverlay">
-                    <span class="upload-icon">📤</span>
-                    <span data-zh="点击或拖拽图片到此处" data-en="Click or drag image here">点击或拖拽图片到此处</span>
-                </div>
-                <div class="watermark-overlay" id="watermarkOverlay" style="display:none;">
-                    <div class="watermark-draggable" id="watermarkDraggable">© 我的水印</div>
-                </div>
-            </div>
-            <input type="file" id="fileUpload" accept="image/*" style="display:none;">
-            <div class="crop-toolbar">
-                <button id="uploadBtn" class="icon-btn">📁 <span data-zh="上传图片" data-en="Upload">上传图片</span></button>
-                <button id="resetCropBtn" class="icon-btn" disabled>⟳ <span data-zh="重置" data-en="Reset">重置</span></button>
-                <button id="rotateLeftBtn" class="icon-btn" disabled>↩ <span data-zh="左旋" data-en="RotL">左旋</span></button>
-                <button id="rotateRightBtn" class="icon-btn" disabled>↪ <span data-zh="右旋" data-en="RotR">右旋</span></button>
-                <button id="removeImageBtn" class="icon-btn danger" disabled>✕ <span data-zh="移除" data-en="Remove">移除</span></button>
-            </div>
-            <div class="aspect-row" style="margin-top:8px;">
-                <span style="font-weight:600;">📐 <span data-zh="比例：" data-en="Ratio:">比例：</span></span>
-                <select id="aspectSelect" class="aspect-select">
-                    <option value="free" data-zh="自由" data-en="Free">自由</option>
-                    <option value="1:1">1:1</option>
-                    <option value="4:3">4:3</option>
-                    <option value="16:9">16:9</option>
-                    <option value="3:2">3:2</option>
-                    <option value="2:3">2:3</option>
-                    <option value="custom" data-zh="自定义" data-en="Custom">自定义</option>
-                </select>
-                <div class="custom-ratio-wrap" id="customRatioWrap">
-                    <input type="number" id="customW" value="16"><span>:</span><input type="number" id="customH" value="9">
-                    <button id="applyCustomAspect" class="btn-sm">应用</button>
-                </div>
-            </div>
-            <div id="cropSizeDetail" style="display:none;font-size:0.75rem;color:#64748b;margin-top:8px;">
-                📏 <span data-zh="输出尺寸：" data-en="Output:">输出尺寸：</span><strong id="cropSizePixels">—</strong> px
-            </div>
-        </div>
-        <div class="card config-card">
-            <div class="card-header"><span>⚙️</span> <span data-zh="输出设定" data-en="Output Settings">输出设定</span></div>
-            <div class="config-group">
-                <label data-zh="输出格式" data-en="Output Format">输出格式</label>
-                <select id="batchFormat" class="select-modern">
-                    <option value="image/jpeg">JPEG</option>
-                    <option value="image/png">PNG</option>
-                    <option value="image/webp">WebP</option>
-                </select>
-            </div>
-            <div class="config-group">
-                <label><span data-zh="画质" data-en="Quality">画质</span> <span id="qualityLabelSuffix">(JPEG/WebP)</span></label>
-                <div class="slider-row">
-                    <input type="range" id="qualitySlider" min="0.1" max="1" step="0.01" value="0.92">
-                    <span id="qualityValue" class="slider-val">92%</span>
-                </div>
-            </div>
-            <div class="estimate-box"><span data-zh="预估大小" data-en="Est. size">预估大小</span><span id="estimateSizeValue">— KB</span></div>
-            <div class="watermark-section">
-                <div class="watermark-toggle" style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                    <input type="checkbox" id="watermarkEnable">
-                    <label for="watermarkEnable" style="font-weight:600; font-size:0.9rem;"><span data-zh="添加水印" data-en="Add Watermark">添加水印</span></label>
-                </div>
-                <div id="watermarkOptions" style="display:none; flex-direction:column; gap:12px;">
-                    <div class="watermark-row">
-                        <label data-zh="文字" data-en="Text">文字</label>
-                        <input type="text" id="watermarkText" value="© 我的水印" style="flex:1; padding:8px 12px; border-radius:40px; border:1px solid var(--border);">
-                    </div>
-                    <div class="watermark-row">
-                        <label data-zh="位置" data-en="Position">位置</label>
-                        <select id="watermarkPosition" style="padding:8px 14px; border-radius:40px; border:1px solid var(--border);">
-                            <option value="bottom-right" data-zh="右下" data-en="Bottom Right">右下</option>
-                            <option value="bottom-left" data-zh="左下" data-en="Bottom Left">左下</option>
-                            <option value="top-right" data-zh="右上" data-en="Top Right">右上</option>
-                            <option value="top-left" data-zh="左上" data-en="Top Left">左上</option>
-                            <option value="center" data-zh="居中" data-en="Center">居中</option>
-                        </select>
-                    </div>
-                    <div class="watermark-row">
-                        <label data-zh="字号" data-en="Size">字号</label>
-                        <input type="range" id="watermarkFontSize" min="12" max="80" value="24">
-                        <span id="watermarkFontSizeVal" class="slider-val">24px</span>
-                    </div>
-                    <div class="watermark-row">
-                        <label data-zh="旋转" data-en="Rotate">旋转</label>
-                        <input type="range" id="watermarkRotation" min="-180" max="180" value="0">
-                        <span id="watermarkRotationVal" class="slider-val">0°</span>
-                    </div>
-                    <div class="watermark-row">
-                        <label data-zh="颜色" data-en="Color">颜色</label>
-                        <input type="color" id="watermarkColor" value="#ffffff">
-                        <label data-zh="透明度" data-en="Opacity" style="margin-left:8px;">透明度</label>
-                        <input type="range" id="watermarkOpacity" min="0.1" max="1" step="0.05" value="0.7">
-                        <span id="watermarkOpacityVal" class="slider-val">70%</span>
-                    </div>
-                    <button id="resetWatermarkPosition" class="icon-btn" style="align-self:flex-start;">📍 <span data-zh="重置位置" data-en="Reset Pos">重置位置</span></button>
-                    <small style="color:#64748b; font-size:0.7rem;" data-zh="💡 也可直接拖拽水印调整位置" data-en="💡 Or drag the watermark to reposition">💡 也可直接拖拽水印调整位置</small>
-                </div>
-            </div>
-            <button id="applyCropBtn" class="btn-primary" disabled>✨ <span data-zh="裁剪并转换" data-en="Crop & Convert">裁剪并转换</span> ✨</button>
-        </div>
-    </div>
-    <div class="result-section">
-        <div class="card-header">✅ <span data-zh="处理结果" data-en="Result">处理结果</span></div>
-        <div id="resultPlaceholder" style="text-align:center; padding:20px; color:#8ba0bc;" data-zh="尚未处理，调整后点击「裁剪并转换」" data-en="Not processed yet. Click 'Crop & Convert' after adjusting.">尚未处理，调整后点击「裁剪并转换」</div>
-        <div id="resultContent" class="result-content">
-            <div class="result-preview-wrap"><img id="resultPreviewImg" src="" alt="result"></div>
-            <div>
-                <div id="resultFilename" style="font-weight:600;"></div>
-                <div id="resultMeta" style="font-size:0.75rem; color:#64748b;"></div>
-                <button id="downloadBtn" class="btn-download" style="margin-top:8px;">📥 <span data-zh="下载图片" data-en="Download">下载图片</span></button>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    (() => {
-        // ─── DOM 元素 ───
-        const refImg = document.getElementById('refImage');
-        const cropWrapper = document.getElementById('cropWrapper');
-        const watermarkOverlay = document.getElementById('watermarkOverlay');
-        const watermarkDraggable = document.getElementById('watermarkDraggable');
-        const uploadOverlay = document.getElementById('uploadOverlay');
-        const fileInput = document.getElementById('fileUpload');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const resetCropBtn = document.getElementById('resetCropBtn');
-        const rotateLeftBtn = document.getElementById('rotateLeftBtn');
-        const rotateRightBtn = document.getElementById('rotateRightBtn');
-        const removeImageBtn = document.getElementById('removeImageBtn');
-        const aspectSelect = document.getElementById('aspectSelect');
-        const customRatioWrap = document.getElementById('customRatioWrap');
-        const customW = document.getElementById('customW');
-        const customH = document.getElementById('customH');
-        const applyCustomAspect = document.getElementById('applyCustomAspect');
-        const batchFormat = document.getElementById('batchFormat');
-        const qualitySlider = document.getElementById('qualitySlider');
-        const qualityValue = document.getElementById('qualityValue');
-        const applyCropBtn = document.getElementById('applyCropBtn');
-        const resultPlaceholder = document.getElementById('resultPlaceholder');
-        const resultContent = document.getElementById('resultContent');
-        const resultPreviewImg = document.getElementById('resultPreviewImg');
-        const resultFilename = document.getElementById('resultFilename');
-        const resultMeta = document.getElementById('resultMeta');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const cropSizePixels = document.getElementById('cropSizePixels');
-        const estimateSizeValue = document.getElementById('estimateSizeValue');
-        const watermarkEnable = document.getElementById('watermarkEnable');
-        const watermarkOptions = document.getElementById('watermarkOptions');
-        const watermarkText = document.getElementById('watermarkText');
-        const watermarkPosition = document.getElementById('watermarkPosition');
-        const watermarkFontSize = document.getElementById('watermarkFontSize');
-        const watermarkFontSizeVal = document.getElementById('watermarkFontSizeVal');
-        const watermarkRotation = document.getElementById('watermarkRotation');
-        const watermarkRotationVal = document.getElementById('watermarkRotationVal');
-        const watermarkColor = document.getElementById('watermarkColor');
-        const watermarkOpacity = document.getElementById('watermarkOpacity');
-        const watermarkOpacityVal = document.getElementById('watermarkOpacityVal');
-        const resetWatermarkPositionBtn = document.getElementById('resetWatermarkPosition');
+    <script>
+        (function() {
+            const refImg = document.getElementById('refImage');
+            const cropWrapper = document.getElementById('cropWrapper');
+            const watermarkOverlay = document.getElementById('watermarkOverlay');
+            const watermarkDraggable = document.getElementById('watermarkDraggable');
+            const uploadOverlay = document.getElementById('uploadOverlay');
+            const fileInput = document.getElementById('fileUpload');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const resetCropBtn = document.getElementById('resetCropBtn');
+            const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+            const rotateRightBtn = document.getElementById('rotateRightBtn');
+            const removeImageBtn = document.getElementById('removeImageBtn');
+            const aspectSelect = document.getElementById('aspectSelect');
+            const customRatioWrap = document.getElementById('customRatioWrap');
+            const customW = document.getElementById('customW');
+            const customH = document.getElementById('customH');
+            const applyCustomAspect = document.getElementById('applyCustomAspect');
+            const batchFormat = document.getElementById('batchFormat');
+            const qualitySlider = document.getElementById('qualitySlider');
+            const qualityValue = document.getElementById('qualityValue');
+            const applyCropBtn = document.getElementById('applyCropBtn');
+            const resultPlaceholder = document.getElementById('resultPlaceholder');
+            const resultContent = document.getElementById('resultContent');
+            const resultPreviewImg = document.getElementById('resultPreviewImg');
+            const resultFilename = document.getElementById('resultFilename');
+            const resultMeta = document.getElementById('resultMeta');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const cropSizeIndicator = document.getElementById('cropSizeIndicator');
+            const cropSizeDetail = document.getElementById('cropSizeDetail');
+            const cropSizePixels = document.getElementById('cropSizePixels');
+            const estimateSizeValue = document.getElementById('estimateSizeValue');
+            const watermarkEnable = document.getElementById('watermarkEnable');
+            const watermarkOptions = document.getElementById('watermarkOptions');
+            const watermarkText = document.getElementById('watermarkText');
+            const watermarkPosition = document.getElementById('watermarkPosition');
+            const watermarkFontSize = document.getElementById('watermarkFontSize');
+            const watermarkFontSizeVal = document.getElementById('watermarkFontSizeVal');
+            const watermarkRotation = document.getElementById('watermarkRotation');
+            const watermarkRotationVal = document.getElementById('watermarkRotationVal');
+            const watermarkColor = document.getElementById('watermarkColor');
+            const watermarkOpacity = document.getElementById('watermarkOpacity');
+            const watermarkOpacityVal = document.getElementById('watermarkOpacityVal');
+            const resetWatermarkPositionBtn = document.getElementById('resetWatermarkPosition');
 
-        // ─── 状态 ───
-        let cropper = null;
-        let currentImageFile = null;
-        let currentImageUrl = null;
-        let resultBlobUrl = null;
-        let currentAspectRatio = NaN;
-        let currentLang = 'zh';
-        let watermarkPos = { xPercent: 90, yPercent: 90 };
-        let watermarkAngle = 0;
-        let isDragging = false;
-        let dragStart = { x:0, y:0, left:0, top:0 };
+            let cropper = null;
+            let currentImageFile = null;
+            let currentImageUrl = null;
+            let resultBlobUrl = null;
+            let currentAspectRatio = NaN;
+            let currentLang = 'zh';
+            let watermarkPos = { xPercent: 90, yPercent: 90 };
+            let watermarkAngle = 0;
+            let isDragging = false;
+            let dragStart = { x: 0, y: 0, left: 0, top: 0 };
 
-        // ─── 多语言数据 ───
-        const translations = {
-            zh: {
-                uploadBtn: '上传图片', resetBtn: '重置', rotL: '左旋', rotR: '右旋', removeBtn: '移除',
-                ratioLabel: '比例：', free: '自由', custom: '自定义',
-                outputFormat: '输出格式', quality: '画质', qualityJPEG: '(JPEG/WebP)', qualityPNG: '(PNG无损)',
-                cropConvertBtn: '裁剪并转换', downloadBtn: '下载图片',
-                resultPlaceholder: '尚未处理，调整后点击「裁剪并转换」',
-                watermarkEnable: '添加水印', watermarkText: '文字', watermarkPosition: '位置',
-                watermarkSize: '字号', watermarkRotate: '旋转', watermarkColor: '颜色', watermarkOpacity: '透明度',
-                resetPos: '重置位置', dragHint: '💡 也可直接拖拽水印调整位置',
-                estimateLabel: '预估大小',
-                bottomRight: '右下', bottomLeft: '左下', topRight: '右上', topLeft: '左上', center: '居中'
-            },
-            en: {
-                uploadBtn: 'Upload', resetBtn: 'Reset', rotL: 'RotL', rotR: 'RotR', removeBtn: 'Remove',
-                ratioLabel: 'Ratio:', free: 'Free', custom: 'Custom',
-                outputFormat: 'Format', quality: 'Quality', qualityJPEG: '(JPEG/WebP)', qualityPNG: '(PNG lossless)',
-                cropConvertBtn: 'Crop & Convert', downloadBtn: 'Download',
-                resultPlaceholder: "Not processed yet. Click 'Crop & Convert' after adjusting.",
-                watermarkEnable: 'Add Watermark', watermarkText: 'Text', watermarkPosition: 'Position',
-                watermarkSize: 'Size', watermarkRotate: 'Rotate', watermarkColor: 'Color', watermarkOpacity: 'Opacity',
-                resetPos: 'Reset Pos', dragHint: '💡 Or drag the watermark to reposition',
-                estimateLabel: 'Est. size',
-                bottomRight: 'Bottom Right', bottomLeft: 'Bottom Left', topRight: 'Top Right', topLeft: 'Top Left', center: 'Center'
+            const translations = {
+                zh: {
+                    uploadBtn: '上传图片',
+                    resetBtn: '重置',
+                    rotL: '左旋',
+                    rotR: '右旋',
+                    removeBtn: '移除',
+                    ratioLabel: '比例：',
+                    free: '自由 (无限制)',
+                    custom: '自定义比例',
+                    outputFormat: '输出格式',
+                    quality: '画质',
+                    qualityJPEG: '(JPEG / WebP)',
+                    qualityPNG: '(PNG 无损)',
+                    cropConvertBtn: '裁剪并转换',
+                    downloadBtn: '下载图片',
+                    resultPlaceholder: '尚未处理，调整裁剪框后点击「裁剪并转换」',
+                    watermarkEnable: '添加水印',
+                    watermarkText: '文字',
+                    watermarkPosition: '位置',
+                    watermarkSize: '字号',
+                    watermarkRotate: '旋转',
+                    watermarkColor: '颜色',
+                    watermarkOpacity: '透明度',
+                    resetPos: '重置位置',
+                    dragHint: '💡 也可直接拖拽水印文字调整位置',
+                    estimateLabel: '预估文件大小',
+                    bottomRight: '右下',
+                    bottomLeft: '左下',
+                    topRight: '右上',
+                    topLeft: '左上',
+                    center: '居中',
+                },
+                en: {
+                    uploadBtn: 'Upload',
+                    resetBtn: 'Reset',
+                    rotL: 'RotL',
+                    rotR: 'RotR',
+                    removeBtn: 'Remove',
+                    ratioLabel: 'Ratio:',
+                    free: 'Free (unlocked)',
+                    custom: 'Custom ratio',
+                    outputFormat: 'Output Format',
+                    quality: 'Quality',
+                    qualityJPEG: '(JPEG / WebP)',
+                    qualityPNG: '(PNG lossless)',
+                    cropConvertBtn: 'Crop & Convert',
+                    downloadBtn: 'Download',
+                    resultPlaceholder: "Not processed yet. Adjust crop & click 'Crop & Convert'.",
+                    watermarkEnable: 'Add Watermark',
+                    watermarkText: 'Text',
+                    watermarkPosition: 'Position',
+                    watermarkSize: 'Font size',
+                    watermarkRotate: 'Rotate',
+                    watermarkColor: 'Color',
+                    watermarkOpacity: 'Opacity',
+                    resetPos: 'Reset Pos',
+                    dragHint: '💡 Or drag the watermark to reposition',
+                    estimateLabel: 'Est. file size',
+                    bottomRight: 'Bottom Right',
+                    bottomLeft: 'Bottom Left',
+                    topRight: 'Top Right',
+                    topLeft: 'Top Left',
+                    center: 'Center',
+                }
+            };
+
+            function t(key) {
+                return translations[currentLang]?.[key] || key;
             }
-        };
 
-        function t(key) {
-            return translations[currentLang]?.[key] || key;
-        }
+            function updateLanguageUI() {
+                document.querySelectorAll('[data-zh]').forEach(el => {
+                    if (el.tagName === 'OPTION') {
+                        const val = el.getAttribute('value');
+                        if (val === 'bottom-right') el.textContent = t('bottomRight');
+                        else if (val === 'bottom-left') el.textContent = t('bottomLeft');
+                        else if (val === 'top-right') el.textContent = t('topRight');
+                        else if (val === 'top-left') el.textContent = t('topLeft');
+                        else if (val === 'center') el.textContent = t('center');
+                        else if (val === 'free') el.textContent = t('free');
+                        else if (val === 'custom') el.textContent = t('custom');
+                        else el.textContent = el.getAttribute('data-' + currentLang) || el.textContent;
+                    } else {
+                        el.textContent = el.getAttribute('data-' + currentLang) || el.textContent;
+                    }
+                });
+                document.getElementById('qualityLabelSuffix').textContent = batchFormat.value === 'image/png' ? t(
+                    'qualityPNG') : t('qualityJPEG');
+                document.querySelector('.estimate-box span:first-child').textContent = t('estimateLabel');
+                document.querySelector('.watermark-toggle label span').textContent = t('watermarkEnable');
+                document.getElementById('watermarkOptions').querySelector('small').textContent = t('dragHint');
+                uploadBtn.querySelector('span').textContent = t('uploadBtn');
+                resetCropBtn.querySelector('span').textContent = t('resetBtn');
+                rotateLeftBtn.querySelector('span').textContent = t('rotL');
+                rotateRightBtn.querySelector('span').textContent = t('rotR');
+                removeImageBtn.querySelector('span').textContent = t('removeBtn');
+                applyCropBtn.querySelector('span').textContent = t('cropConvertBtn');
+                downloadBtn.querySelector('span').textContent = t('downloadBtn');
+                resetWatermarkPositionBtn.querySelector('span').textContent = t('resetPos');
+                resultPlaceholder.textContent = t('resultPlaceholder');
+            }
 
-        // ─── 语言更新 ───
-        function updateLanguageUI() {
-            document.querySelectorAll('[data-zh]').forEach(el => {
-                if (el.tagName === 'OPTION') {
-                    const val = el.getAttribute('value');
-                    if (val === 'bottom-right') el.textContent = t('bottomRight');
-                    else if (val === 'bottom-left') el.textContent = t('bottomLeft');
-                    else if (val === 'top-right') el.textContent = t('topRight');
-                    else if (val === 'top-left') el.textContent = t('topLeft');
-                    else if (val === 'center') el.textContent = t('center');
-                    else if (val === 'free') el.textContent = t('free');
-                    else if (val === 'custom') el.textContent = t('custom');
-                    else el.textContent = el.getAttribute('data-' + currentLang) || el.textContent;
-                } else {
-                    el.textContent = el.getAttribute('data-' + currentLang) || el.textContent;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentLang = btn.getAttribute('data-lang');
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove(
+                    'active'));
+                    btn.classList.add('active');
+                    updateLanguageUI();
+                });
+            });
+
+            function revokeIfBlob(url) { if (url?.startsWith('blob:')) try { URL.revokeObjectURL(
+                url); } catch (e) {} }
+
+            function cleanupResultBlob() { revokeIfBlob(resultBlobUrl);
+                resultBlobUrl = null; }
+
+            function cleanupCurrentImage() {
+                if (cropper) { cropper.destroy();
+                    cropper = null; }
+                revokeIfBlob(currentImageUrl);
+                currentImageUrl = null;
+                currentImageFile = null;
+                refImg.src = '';
+                refImg.style.display = 'none';
+                uploadOverlay.classList.remove('hidden');
+                cropWrapper.classList.remove('has-image');
+                watermarkOverlay.style.display = 'none';
+            }
+
+            function setToolbarEnabled(enabled) {
+                resetCropBtn.disabled = !enabled;
+                rotateLeftBtn.disabled = !enabled;
+                rotateRightBtn.disabled = !enabled;
+                removeImageBtn.disabled = !enabled;
+                applyCropBtn.disabled = !enabled;
+                aspectSelect.disabled = !enabled;
+                if (!enabled) {
+                    customRatioWrap.style.display = 'none';
+                    aspectSelect.value = 'free';
+                    currentAspectRatio = NaN;
+                    cropSizeDetail.style.display = 'none';
+                    cropSizeIndicator.textContent = '';
+                    cropSizePixels.textContent = '—';
+                    watermarkOverlay.style.display = 'none';
+                }
+                updateEstimateSize();
+            }
+
+            function hideResult() {
+                cleanupResultBlob();
+                resultContent.classList.remove('visible');
+                resultPlaceholder.style.display = 'block';
+                resultPreviewImg.src = '';
+                resultFilename.textContent = '';
+                resultMeta.textContent = '';
+            }
+
+            function applyPositionFromDropdown() {
+                const pos = watermarkPosition.value;
+                switch (pos) {
+                    case 'bottom-right':
+                        watermarkPos = { xPercent: 90, yPercent: 90 };
+                        break;
+                    case 'bottom-left':
+                        watermarkPos = { xPercent: 10, yPercent: 90 };
+                        break;
+                    case 'top-right':
+                        watermarkPos = { xPercent: 90, yPercent: 10 };
+                        break;
+                    case 'top-left':
+                        watermarkPos = { xPercent: 10, yPercent: 10 };
+                        break;
+                    case 'center':
+                        watermarkPos = { xPercent: 50, yPercent: 50 };
+                        break;
+                    default:
+                        watermarkPos = { xPercent: 90, yPercent: 90 };
+                }
+                positionWatermarkInCropBox();
+            }
+
+            function updateWatermarkUI() {
+                if (!watermarkEnable.checked || !cropper) {
+                    watermarkOverlay.style.display = 'none';
+                    return;
+                }
+                watermarkOverlay.style.display = 'block';
+                watermarkDraggable.textContent = watermarkText.value || '水印';
+                watermarkDraggable.style.fontSize = watermarkFontSize.value + 'px';
+                watermarkDraggable.style.color = watermarkColor.value;
+                watermarkDraggable.style.opacity = watermarkOpacity.value;
+                watermarkDraggable.style.transform = `translate(-50%, -50%) rotate(${watermarkAngle}deg)`;
+                positionWatermarkInCropBox();
+            }
+
+            function positionWatermarkInCropBox() {
+                if (!cropper) return;
+                try {
+                    const cropBox = cropper.getCropBoxData();
+                    const xPx = cropBox.left + (watermarkPos.xPercent / 100) * cropBox.width;
+                    const yPx = cropBox.top + (watermarkPos.yPercent / 100) * cropBox.height;
+                    watermarkDraggable.style.left = xPx + 'px';
+                    watermarkDraggable.style.top = yPx + 'px';
+                } catch (e) {}
+            }
+
+            function onCropperChange() {
+                if (!cropper) return;
+                const data = cropper.getData(true);
+                if (data) {
+                    cropSizePixels.textContent = Math.round(data.width) + ' × ' + Math.round(data.height);
+                    cropSizeDetail.style.display = 'block';
+                    cropSizeIndicator.textContent = Math.round(data.width) + '×' + Math.round(data.height) + ' px';
+                }
+                updateEstimateSize();
+                if (watermarkEnable.checked) updateWatermarkUI();
+            }
+
+            function updateEstimateSize() {
+                if (!cropper) { estimateSizeValue.textContent = '— KB'; return; }
+                const canvas = cropper.getCroppedCanvas();
+                if (!canvas || canvas.width === 0) { estimateSizeValue.textContent = '— KB'; return; }
+                const pixels = canvas.width * canvas.height;
+                const q = parseFloat(qualitySlider.value);
+                let bytes = 0;
+                const fmt = batchFormat.value;
+                if (fmt === 'image/png') bytes = pixels * 0.8;
+                else if (fmt === 'image/jpeg') bytes = pixels * q * 0.25;
+                else if (fmt === 'image/webp') bytes = pixels * q * 0.2;
+                const kb = bytes / 1024;
+                estimateSizeValue.textContent = kb < 0.1 ? '< 0.1 KB' : (kb > 999 ? (kb / 1024).toFixed(1) + ' MB' : kb
+                    .toFixed(1) + ' KB');
+            }
+
+            function initCropper(img) {
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(img, {
+                    viewMode: 1,
+                    dragMode: 'crop',
+                    aspectRatio: isNaN(currentAspectRatio) ? NaN : currentAspectRatio,
+                    autoCropArea: 0.82,
+                    background: true,
+                    responsive: true,
+                    restore: true,
+                    crop: onCropperChange,
+                    ready: onCropperChange
+                });
+            }
+
+            function loadImage(file) {
+                cleanupCurrentImage();
+                hideResult();
+                const url = URL.createObjectURL(file);
+                currentImageUrl = url;
+                currentImageFile = file;
+                refImg.src = url;
+                refImg.style.display = 'block';
+                refImg.onload = () => {
+                    uploadOverlay.classList.add('hidden');
+                    cropWrapper.classList.add('has-image');
+                    initCropper(refImg);
+                    setToolbarEnabled(true);
+                    updateWatermarkUI();
+                };
+            }
+
+            function handleFile(file) {
+                if (!file?.type?.startsWith('image/')) {
+                    alert(currentLang === 'zh' ? '请选择有效的图片文件' : 'Please select a valid image file.');
+                    return;
+                }
+                loadImage(file);
+            }
+
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', e => {
+                if (e.target.files[0]) handleFile(e.target.files[0]);
+                fileInput.value = '';
+            });
+            cropWrapper.addEventListener('click', e => {
+                if (!cropper && (e.target === cropWrapper || e.target.closest('.upload-overlay'))) fileInput
+            .click();
+            });
+            ['dragenter', 'dragover'].forEach(evt => cropWrapper.addEventListener(evt, e => {
+                e.preventDefault();
+                cropWrapper.classList.add('drop-highlight');
+            }));
+            ['dragleave', 'drop'].forEach(evt => cropWrapper.addEventListener(evt, e => {
+                e.preventDefault();
+                cropWrapper.classList.remove('drop-highlight');
+            }));
+            cropWrapper.addEventListener('drop', e => {
+                if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+            });
+
+            resetCropBtn.addEventListener('click', () => { if (cropper) cropper.reset(); });
+            rotateLeftBtn.addEventListener('click', () => { if (cropper) cropper.rotate(-90); });
+            rotateRightBtn.addEventListener('click', () => { if (cropper) cropper.rotate(90); });
+            removeImageBtn.addEventListener('click', () => {
+                cleanupCurrentImage();
+                hideResult();
+                setToolbarEnabled(false);
+            });
+
+            function applyAspectRatio(val) {
+                if (!cropper) return;
+                let ratio = NaN;
+                if (val === '1:1') ratio = 1;
+                else if (val === '4:3') ratio = 4 / 3;
+                else if (val === '16:9') ratio = 16 / 9;
+                else if (val === '3:2') ratio = 3 / 2;
+                else if (val === '2:3') ratio = 2 / 3;
+                else if (val === 'custom') {
+                    const w = parseFloat(customW.value),
+                        h = parseFloat(customH.value);
+                    if (w && h && w > 0 && h > 0) ratio = w / h;
+                }
+                currentAspectRatio = ratio;
+                cropper.setAspectRatio(ratio);
+            }
+            aspectSelect.addEventListener('change', e => {
+                customRatioWrap.style.display = e.target.value === 'custom' ? 'flex' : 'none';
+                applyAspectRatio(e.target.value);
+            });
+            applyCustomAspect.addEventListener('click', () => {
+                const w = parseFloat(customW.value),
+                    h = parseFloat(customH.value);
+                if (w && h && w > 0 && h > 0) {
+                    aspectSelect.value = 'custom';
+                    customRatioWrap.style.display = 'flex';
+                    applyAspectRatio('custom');
+                } else alert('请输入有效宽高');
+            });
+
+            batchFormat.addEventListener('change', () => {
+                const png = batchFormat.value === 'image/png';
+                qualitySlider.disabled = png;
+                qualityValue.textContent = png ? 'N/A' : Math.round(qualitySlider.value * 100) + '%';
+                updateLanguageUI();
+                updateEstimateSize();
+            });
+            qualitySlider.addEventListener('input', () => {
+                if (batchFormat.value !== 'image/png') qualityValue.textContent = Math.round(qualitySlider.value *
+                    100) + '%';
+                updateEstimateSize();
+            });
+
+            watermarkEnable.addEventListener('change', () => {
+                watermarkOptions.style.display = watermarkEnable.checked ? 'flex' : 'none';
+                updateWatermarkUI();
+            });
+            watermarkText.addEventListener('input', updateWatermarkUI);
+            watermarkPosition.addEventListener('change', () => {
+                applyPositionFromDropdown();
+                updateWatermarkUI();
+            });
+            watermarkFontSize.addEventListener('input', () => {
+                watermarkFontSizeVal.textContent = watermarkFontSize.value + 'px';
+                updateWatermarkUI();
+            });
+            watermarkRotation.addEventListener('input', () => {
+                watermarkAngle = parseInt(watermarkRotation.value);
+                watermarkRotationVal.textContent = watermarkAngle + '°';
+                updateWatermarkUI();
+            });
+            watermarkColor.addEventListener('input', updateWatermarkUI);
+            watermarkOpacity.addEventListener('input', () => {
+                watermarkOpacityVal.textContent = Math.round(watermarkOpacity.value * 100) + '%';
+                updateWatermarkUI();
+            });
+            resetWatermarkPositionBtn.addEventListener('click', () => {
+                watermarkPos = { xPercent: 90, yPercent: 90 };
+                watermarkAngle = 0;
+                watermarkRotation.value = 0;
+                watermarkRotationVal.textContent = '0°';
+                watermarkPosition.value = 'bottom-right';
+                updateWatermarkUI();
+            });
+
+            watermarkDraggable.addEventListener('pointerdown', e => {
+                if (!watermarkEnable.checked || !cropper) return;
+                e.preventDefault();
+                isDragging = true;
+                const left = parseFloat(watermarkDraggable.style.left) || 0;
+                const top = parseFloat(watermarkDraggable.style.top) || 0;
+                dragStart = { x: e.clientX, y: e.clientY, left, top };
+                watermarkDraggable.setPointerCapture(e.pointerId);
+            });
+            window.addEventListener('pointermove', e => {
+                if (!isDragging || !cropper) return;
+                const newLeft = dragStart.left + (e.clientX - dragStart.x);
+                const newTop = dragStart.top + (e.clientY - dragStart.y);
+                try {
+                    const cropBox = cropper.getCropBoxData();
+                    const xPercent = ((newLeft - cropBox.left) / cropBox.width) * 100;
+                    const yPercent = ((newTop - cropBox.top) / cropBox.height) * 100;
+                    watermarkPos = {
+                        xPercent: Math.min(100, Math.max(0, xPercent)),
+                        yPercent: Math.min(100, Math.max(0, yPercent))
+                    };
+                    const clampedLeft = cropBox.left + (watermarkPos.xPercent / 100) * cropBox.width;
+                    const clampedTop = cropBox.top + (watermarkPos.yPercent / 100) * cropBox.height;
+                    watermarkDraggable.style.left = clampedLeft + 'px';
+                    watermarkDraggable.style.top = clampedTop + 'px';
+                } catch (e) {}
+            });
+            window.addEventListener('pointerup', () => { isDragging = false; });
+
+            window.addEventListener('resize', () => {
+                if (cropper && watermarkEnable.checked) positionWatermarkInCropBox();
+            });
+
+            applyCropBtn.addEventListener('click', async () => {
+                if (!cropper) return;
+                const croppedCanvas = cropper.getCroppedCanvas();
+                if (!croppedCanvas || croppedCanvas.width === 0) return;
+
+                if (watermarkEnable.checked && watermarkText.value.trim()) {
+                    const wmLeft = parseFloat(watermarkDraggable.style.left) || 0;
+                    const wmTop = parseFloat(watermarkDraggable.style.top) || 0;
+                    const cropBox = cropper.getCropBoxData();
+                    const scaleX = croppedCanvas.width / cropBox.width;
+                    const scaleY = croppedCanvas.height / cropBox.height;
+                    const canvasX = (wmLeft - cropBox.left) * scaleX;
+                    const canvasY = (wmTop - cropBox.top) * scaleY;
+
+                    const ctx = croppedCanvas.getContext('2d');
+                    ctx.save();
+                    ctx.globalAlpha = parseFloat(watermarkOpacity.value);
+                    ctx.fillStyle = watermarkColor.value;
+                    ctx.font = `bold ${watermarkFontSize.value}px "Inter", sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.translate(canvasX, canvasY);
+                    ctx.rotate(watermarkAngle * Math.PI / 180);
+                    ctx.fillText(watermarkText.value, 0, 0);
+                    ctx.restore();
+                }
+
+                const fmt = batchFormat.value;
+                const quality = parseFloat(qualitySlider.value);
+                let finalCanvas = croppedCanvas;
+                if (fmt === 'image/jpeg') {
+                    const wc = document.createElement('canvas');
+                    wc.width = croppedCanvas.width;
+                    wc.height = croppedCanvas.height;
+                    const wctx = wc.getContext('2d');
+                    wctx.fillStyle = '#FFFFFF';
+                    wctx.fillRect(0, 0, wc.width, wc.height);
+                    wctx.drawImage(croppedCanvas, 0, 0);
+                    finalCanvas = wc;
+                }
+
+                const blob = await new Promise(r => finalCanvas.toBlob(r, fmt, fmt !== 'image/png' ? quality :
+                    undefined));
+                if (!blob) return;
+
+                cleanupResultBlob();
+                resultBlobUrl = URL.createObjectURL(blob);
+                resultPreviewImg.src = resultBlobUrl;
+                const ext = fmt === 'image/jpeg' ? 'jpg' : (fmt === 'image/webp' ? 'webp' : 'png');
+                resultFilename.textContent = (currentImageFile?.name.replace(/\.[^.]+$/, '') || 'image') + '.' + ext;
+                resultMeta.textContent =
+                    `${finalCanvas.width} × ${finalCanvas.height} px · ${(blob.size/1024).toFixed(1)} KB · ${ext.toUpperCase()}`;
+                resultPlaceholder.style.display = 'none';
+                resultContent.classList.add('visible');
+                document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            downloadBtn.addEventListener('click', () => {
+                if (!resultBlobUrl) return;
+                const a = document.createElement('a');
+                a.href = resultBlobUrl;
+                a.download = resultFilename.textContent || 'cropped_image';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+
+            document.addEventListener('keydown', e => {
+                if (!cropper) return;
+                if (e.ctrlKey && e.key === 'Enter') { e.preventDefault();
+                    applyCropBtn.click(); }
+                if (e.key === 'r' && !e.ctrlKey && !e.metaKey && document.activeElement === document.body) {
+                    e.preventDefault();
+                    cropper.reset();
+                    onCropperChange();
                 }
             });
-            document.getElementById('qualityLabelSuffix').textContent = batchFormat.value === 'image/png' ? t('qualityPNG') : t('qualityJPEG');
-            document.querySelector('.estimate-box span:first-child').textContent = t('estimateLabel');
-            document.querySelector('.watermark-toggle label span').textContent = t('watermarkEnable');
-            document.getElementById('watermarkOptions').querySelector('small').textContent = t('dragHint');
-            uploadBtn.querySelector('span').textContent = t('uploadBtn');
-            resetCropBtn.querySelector('span').textContent = t('resetBtn');
-            rotateLeftBtn.querySelector('span').textContent = t('rotL');
-            rotateRightBtn.querySelector('span').textContent = t('rotR');
-            removeImageBtn.querySelector('span').textContent = t('removeBtn');
-            applyCropBtn.querySelector('span').textContent = t('cropConvertBtn');
-            downloadBtn.querySelector('span').textContent = t('downloadBtn');
-            resetWatermarkPositionBtn.querySelector('span').textContent = t('resetPos');
-            resultPlaceholder.textContent = t('resultPlaceholder');
-        }
 
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentLang = btn.getAttribute('data-lang');
-                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+            function init() {
+                setToolbarEnabled(false);
+                hideResult();
+                cropSizeDetail.style.display = 'none';
+                cropSizeIndicator.textContent = '';
                 updateLanguageUI();
-            });
-        });
-
-        // ─── 工具函数 ───
-        function revokeIfBlob(url) { if (url?.startsWith('blob:')) try { URL.revokeObjectURL(url); } catch(e){} }
-        function cleanupResultBlob() { revokeIfBlob(resultBlobUrl); resultBlobUrl = null; }
-        function cleanupCurrentImage() {
-            if (cropper) { cropper.destroy(); cropper = null; }
-            revokeIfBlob(currentImageUrl);
-            currentImageUrl = null; currentImageFile = null;
-            refImg.src = ''; refImg.style.display = 'none';
-            uploadOverlay.classList.remove('hidden');
-            cropWrapper.classList.remove('has-image');
-            watermarkOverlay.style.display = 'none';
-        }
-        function setToolbarEnabled(enabled) {
-            resetCropBtn.disabled = !enabled;
-            rotateLeftBtn.disabled = !enabled;
-            rotateRightBtn.disabled = !enabled;
-            removeImageBtn.disabled = !enabled;
-            applyCropBtn.disabled = !enabled;
-            aspectSelect.disabled = !enabled;
-            if (!enabled) {
-                customRatioWrap.style.display = 'none';
-                aspectSelect.value = 'free';
+                updateEstimateSize();
                 currentAspectRatio = NaN;
-                document.getElementById('cropSizeDetail').style.display = 'none';
-                document.getElementById('cropSizeIndicator').textContent = '';
-                cropSizePixels.textContent = '—';
-                watermarkOverlay.style.display = 'none';
+                aspectSelect.value = 'free';
+                customRatioWrap.style.display = 'none';
+                watermarkOptions.style.display = 'none';
             }
-            updateEstimateSize();
-        }
-        function hideResult() {
-            cleanupResultBlob();
-            resultContent.classList.remove('visible');
-            resultPlaceholder.style.display = 'block';
-            resultPreviewImg.src = '';
-            resultFilename.textContent = '';
-            resultMeta.textContent = '';
-        }
-
-        function applyPositionFromDropdown() {
-            const pos = watermarkPosition.value;
-            switch(pos) {
-                case 'bottom-right': watermarkPos = { xPercent: 90, yPercent: 90 }; break;
-                case 'bottom-left': watermarkPos = { xPercent: 10, yPercent: 90 }; break;
-                case 'top-right': watermarkPos = { xPercent: 90, yPercent: 10 }; break;
-                case 'top-left': watermarkPos = { xPercent: 10, yPercent: 10 }; break;
-                case 'center': watermarkPos = { xPercent: 50, yPercent: 50 }; break;
-                default: watermarkPos = { xPercent: 90, yPercent: 90 };
-            }
-            positionWatermarkInCropBox();
-        }
-
-        function updateWatermarkUI() {
-            if (!watermarkEnable.checked || !cropper) {
-                watermarkOverlay.style.display = 'none';
-                return;
-            }
-            watermarkOverlay.style.display = 'block';
-            watermarkDraggable.textContent = watermarkText.value || '水印';
-            watermarkDraggable.style.fontSize = watermarkFontSize.value + 'px';
-            watermarkDraggable.style.color = watermarkColor.value;
-            watermarkDraggable.style.opacity = watermarkOpacity.value;
-            watermarkDraggable.style.transform = `translate(-50%, -50%) rotate(${watermarkAngle}deg)`;
-            positionWatermarkInCropBox();
-        }
-
-        function positionWatermarkInCropBox() {
-            if (!cropper) return;
-            try {
-                const cropBox = cropper.getCropBoxData();
-                const xPx = cropBox.left + (watermarkPos.xPercent / 100) * cropBox.width;
-                const yPx = cropBox.top + (watermarkPos.yPercent / 100) * cropBox.height;
-                watermarkDraggable.style.left = xPx + 'px';
-                watermarkDraggable.style.top = yPx + 'px';
-            } catch (e) {}
-        }
-
-        function onCropperChange() {
-            if (!cropper) return;
-            const data = cropper.getData(true);
-            if (data) {
-                cropSizePixels.textContent = Math.round(data.width) + ' × ' + Math.round(data.height);
-                document.getElementById('cropSizeDetail').style.display = 'block';
-                document.getElementById('cropSizeIndicator').textContent = Math.round(data.width) + '×' + Math.round(data.height) + ' px';
-            }
-            updateEstimateSize();
-            if (watermarkEnable.checked) updateWatermarkUI();
-        }
-
-        function updateEstimateSize() {
-            if (!cropper) { estimateSizeValue.textContent = '— KB'; return; }
-            const canvas = cropper.getCroppedCanvas();
-            if (!canvas || canvas.width === 0) { estimateSizeValue.textContent = '— KB'; return; }
-            const pixels = canvas.width * canvas.height;
-            const q = parseFloat(qualitySlider.value);
-            let bytes = 0;
-            const fmt = batchFormat.value;
-            if (fmt === 'image/png') bytes = pixels * 0.8;
-            else if (fmt === 'image/jpeg') bytes = pixels * q * 0.25;
-            else if (fmt === 'image/webp') bytes = pixels * q * 0.2;
-            const kb = bytes / 1024;
-            estimateSizeValue.textContent = kb < 0.1 ? '< 0.1 KB' : (kb > 999 ? (kb/1024).toFixed(1) + ' MB' : kb.toFixed(1) + ' KB');
-        }
-
-        function initCropper(img) {
-            if (cropper) cropper.destroy();
-            cropper = new Cropper(img, {
-                viewMode: 1, dragMode: 'crop',
-                aspectRatio: isNaN(currentAspectRatio) ? NaN : currentAspectRatio,
-                autoCropArea: 0.82, background: true, responsive: true, restore: true,
-                crop: onCropperChange, ready: onCropperChange
-            });
-        }
-
-        function loadImage(file) {
-            cleanupCurrentImage();
-            hideResult();
-            const url = URL.createObjectURL(file);
-            currentImageUrl = url;
-            currentImageFile = file;
-            refImg.src = url;
-            refImg.style.display = 'block';
-            refImg.onload = () => {
-                uploadOverlay.classList.add('hidden');
-                cropWrapper.classList.add('has-image');
-                initCropper(refImg);
-                setToolbarEnabled(true);
-                updateWatermarkUI();
-            };
-        }
-
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', e => { if (e.target.files[0]) loadImage(e.target.files[0]); fileInput.value = ''; });
-        cropWrapper.addEventListener('click', e => { if (!cropper) fileInput.click(); });
-        cropWrapper.addEventListener('dragover', e => e.preventDefault());
-        cropWrapper.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files[0]) loadImage(e.dataTransfer.files[0]); });
-
-        resetCropBtn.addEventListener('click', () => { if (cropper) cropper.reset(); });
-        rotateLeftBtn.addEventListener('click', () => { if (cropper) cropper.rotate(-90); });
-        rotateRightBtn.addEventListener('click', () => { if (cropper) cropper.rotate(90); });
-        removeImageBtn.addEventListener('click', () => { cleanupCurrentImage(); hideResult(); setToolbarEnabled(false); });
-
-        function applyAspectRatio(val) {
-            if (!cropper) return;
-            let ratio = NaN;
-            if (val === '1:1') ratio = 1; else if (val === '4:3') ratio = 4/3; else if (val === '16:9') ratio = 16/9;
-            else if (val === '3:2') ratio = 3/2; else if (val === '2:3') ratio = 2/3;
-            else if (val === 'custom') { const w = parseFloat(customW.value), h = parseFloat(customH.value); if (w && h && w>0 && h>0) ratio = w/h; }
-            currentAspectRatio = ratio;
-            cropper.setAspectRatio(ratio);
-        }
-        aspectSelect.addEventListener('change', e => {
-            customRatioWrap.style.display = e.target.value === 'custom' ? 'flex' : 'none';
-            applyAspectRatio(e.target.value);
-        });
-        applyCustomAspect.addEventListener('click', () => {
-            const w = parseFloat(customW.value), h = parseFloat(customH.value);
-            if (w && h && w>0 && h>0) { aspectSelect.value = 'custom'; customRatioWrap.style.display = 'flex'; applyAspectRatio('custom'); }
-            else alert('请输入有效宽高');
-        });
-
-        batchFormat.addEventListener('change', () => {
-            const png = batchFormat.value === 'image/png';
-            qualitySlider.disabled = png;
-            qualityValue.textContent = png ? 'N/A' : Math.round(qualitySlider.value * 100) + '%';
-            updateLanguageUI();
-            updateEstimateSize();
-        });
-        qualitySlider.addEventListener('input', () => {
-            if (batchFormat.value !== 'image/png') qualityValue.textContent = Math.round(qualitySlider.value * 100) + '%';
-            updateEstimateSize();
-        });
-
-        watermarkEnable.addEventListener('change', () => {
-            watermarkOptions.style.display = watermarkEnable.checked ? 'flex' : 'none';
-            updateWatermarkUI();
-        });
-        watermarkText.addEventListener('input', updateWatermarkUI);
-        watermarkPosition.addEventListener('change', () => {
-            applyPositionFromDropdown();
-            updateWatermarkUI();
-        });
-        watermarkFontSize.addEventListener('input', () => {
-            watermarkFontSizeVal.textContent = watermarkFontSize.value + 'px';
-            updateWatermarkUI();
-        });
-        watermarkRotation.addEventListener('input', () => {
-            watermarkAngle = parseInt(watermarkRotation.value);
-            watermarkRotationVal.textContent = watermarkAngle + '°';
-            updateWatermarkUI();
-        });
-        watermarkColor.addEventListener('input', updateWatermarkUI);
-        watermarkOpacity.addEventListener('input', () => {
-            watermarkOpacityVal.textContent = Math.round(watermarkOpacity.value * 100) + '%';
-            updateWatermarkUI();
-        });
-        resetWatermarkPositionBtn.addEventListener('click', () => {
-            watermarkPos = { xPercent: 90, yPercent: 90 };
-            watermarkAngle = 0;
-            watermarkRotation.value = 0;
-            watermarkRotationVal.textContent = '0°';
-            watermarkPosition.value = 'bottom-right';
-            updateWatermarkUI();
-        });
-
-        // 水印拖拽
-        watermarkDraggable.addEventListener('pointerdown', e => {
-            if (!watermarkEnable.checked || !cropper) return;
-            e.preventDefault();
-            isDragging = true;
-            const left = parseFloat(watermarkDraggable.style.left) || 0;
-            const top = parseFloat(watermarkDraggable.style.top) || 0;
-            dragStart = { x: e.clientX, y: e.clientY, left, top };
-            watermarkDraggable.setPointerCapture(e.pointerId);
-        });
-        window.addEventListener('pointermove', e => {
-            if (!isDragging || !cropper) return;
-            const newLeft = dragStart.left + (e.clientX - dragStart.x);
-            const newTop = dragStart.top + (e.clientY - dragStart.y);
-            try {
-                const cropBox = cropper.getCropBoxData();
-                const xPercent = ((newLeft - cropBox.left) / cropBox.width) * 100;
-                const yPercent = ((newTop - cropBox.top) / cropBox.height) * 100;
-                watermarkPos = {
-                    xPercent: Math.min(100, Math.max(0, xPercent)),
-                    yPercent: Math.min(100, Math.max(0, yPercent))
-                };
-                const clampedLeft = cropBox.left + (watermarkPos.xPercent / 100) * cropBox.width;
-                const clampedTop = cropBox.top + (watermarkPos.yPercent / 100) * cropBox.height;
-                watermarkDraggable.style.left = clampedLeft + 'px';
-                watermarkDraggable.style.top = clampedTop + 'px';
-            } catch (e) {}
-        });
-        window.addEventListener('pointerup', () => { isDragging = false; });
-
-        // 裁剪保存
-        applyCropBtn.addEventListener('click', async () => {
-            if (!cropper) return;
-            const croppedCanvas = cropper.getCroppedCanvas();
-            if (!croppedCanvas || croppedCanvas.width === 0) return;
-
-            if (watermarkEnable.checked && watermarkText.value.trim()) {
-                const wmLeft = parseFloat(watermarkDraggable.style.left) || 0;
-                const wmTop = parseFloat(watermarkDraggable.style.top) || 0;
-                const cropBox = cropper.getCropBoxData();
-                const scaleX = croppedCanvas.width / cropBox.width;
-                const scaleY = croppedCanvas.height / cropBox.height;
-                const canvasX = (wmLeft - cropBox.left) * scaleX;
-                const canvasY = (wmTop - cropBox.top) * scaleY;
-
-                const ctx = croppedCanvas.getContext('2d');
-                ctx.save();
-                ctx.globalAlpha = parseFloat(watermarkOpacity.value);
-                ctx.fillStyle = watermarkColor.value;
-                ctx.font = `bold ${watermarkFontSize.value}px "Inter", sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.translate(canvasX, canvasY);
-                ctx.rotate(watermarkAngle * Math.PI / 180);
-                ctx.fillText(watermarkText.value, 0, 0);
-                ctx.restore();
-            }
-
-            const fmt = batchFormat.value;
-            const quality = parseFloat(qualitySlider.value);
-            let finalCanvas = croppedCanvas;
-            if (fmt === 'image/jpeg') {
-                const wc = document.createElement('canvas');
-                wc.width = croppedCanvas.width; wc.height = croppedCanvas.height;
-                const wctx = wc.getContext('2d');
-                wctx.fillStyle = '#FFFFFF'; wctx.fillRect(0,0,wc.width,wc.height);
-                wctx.drawImage(croppedCanvas,0,0);
-                finalCanvas = wc;
-            }
-
-            const blob = await new Promise(r => finalCanvas.toBlob(r, fmt, fmt !== 'image/png' ? quality : undefined));
-            if (!blob) return;
-
-            cleanupResultBlob();
-            resultBlobUrl = URL.createObjectURL(blob);
-            resultPreviewImg.src = resultBlobUrl;
-            const ext = fmt === 'image/jpeg' ? 'jpg' : (fmt === 'image/webp' ? 'webp' : 'png');
-            resultFilename.textContent = (currentImageFile?.name.replace(/\.[^.]+$/,'') || 'image') + '.' + ext;
-            resultMeta.textContent = `${finalCanvas.width}×${finalCanvas.height} · ${(blob.size/1024).toFixed(1)} KB`;
-            resultPlaceholder.style.display = 'none';
-            resultContent.classList.add('visible');
-        });
-
-        downloadBtn.addEventListener('click', () => {
-            if (!resultBlobUrl) return;
-            const a = document.createElement('a');
-            a.href = resultBlobUrl;
-            a.download = resultFilename.textContent;
-            a.click();
-        });
-
-        // 初始化
-        setToolbarEnabled(false);
-        watermarkOptions.style.display = 'none';
-        updateEstimateSize();
-        updateLanguageUI();
-    })();
-</script>
+            init();
+        })();
+    </script>
 </body>
 </html>
