@@ -1,29 +1,59 @@
-# 📸 BatchCraft · 批量图片裁切工坊
+# ✂️ CropCraft · 裁剪工坊
 
-> 一个轻量、美观、全功能的纯前端工具，支持多图批量裁剪、统一选区、格式转换及一键打包下载。
+> 一款轻量、精致的在线图片裁剪与水印工具，支持实时预览、格式转换与文件大小预估。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![license](https://img.shields.io/badge/license-MIT-blue)
+![version](https://img.shields.io/badge/version-1.1.0-brightgreen)
 
-**在线演示**（如已部署） | [报告问题](../../issues)
+---
 
-## ✨ 特性
+## 🌟 功能亮点
 
-- 🖼️ **批量上传**：一次选择多张图片（支持 JPG/PNG/WebP/BMP/GIF）
-- ✂️ **统一裁剪**：任意图片设为参考框 → 拖拽/缩放/旋转 → 一键应用到所有图片
-- 🎨 **格式转换**：输出可选 JPEG / PNG / WebP，JPEG/WebP 支持画质调节
-- 📦 **打包下载**：所有处理后图片可打包为 ZIP 文件，同时支持单张点击下载
-- 🌐 **中英文双语**：界面一键切换中英文，适合国内外用户
-- 📱 **响应式设计**：适配桌面与平板，简洁现代的玻璃态 UI
+- **单张精裁**  
+  拖拽/缩放裁剪框，自由比例或锁定固定比例（1:1、4:3、16:9 等），支持自定义宽高比。
 
-## 🚀 快速上手
+- **水印大师**  
+  - 自由拖拽水印位置，或通过“右下/左下/右上/左上/居中”快速定位。  
+  - 实时调整字号、旋转角度、颜色、透明度，所有修改在裁剪区即时预览。  
+  - 保存后水印位置与预览完全一致，无偏移。
 
-### 1️⃣ 直接使用（无需安装）
-克隆或下载本仓库，双击 `index.html` 即可在浏览器中运行（完全本地处理，不上传任何图片到服务器）。
+- **格式转换**  
+  输出 JPEG、PNG、WebP 三种格式，满足不同场景需求。
 
-```bash
-git clone https://github.com/yourname/batch-cropper.git
-cd batch-cropper
-open index.html
+- **画质控制**  
+  JPEG / WebP 可动态调整画质（10% ~ 100%），PNG 为无损输出。
+
+- **文件大小预估**  
+  根据裁剪尺寸、格式和画质，实时估算输出文件大小，辅助调整参数。
+
+- **一键下载**  
+  处理后直接下载图片，也可点击预览图保存。
+
+- **双语界面**  
+  内置中文 / English 切换，覆盖所有控件与提示文字。
+
+- **拖拽上传**  
+  支持点击上传或直接拖拽图片到作业区。
+
+- **快捷键**  
+  `Ctrl + Enter` 快速执行裁剪，`R` 键重置裁剪框。
+
+---
+
+## 🖼️ 界面预览
+
+> 可将工具运行截图放在此处，例如：  
+> `![screenshot](screenshot.png)`
+
+---
+
+## 🚀 快速使用
+
+### 在线使用
+直接在浏览器中打开 `index.html` 即可使用，无需安装或构建。
+
+### 本地运行
+1. 克隆仓库：
+   ```bash
+   git clone https://github.com/你的用户名/cropcraft.git
+   cd cropcraft
