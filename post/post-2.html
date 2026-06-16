@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+    <title>设计美观水印的5个技巧 – CropCraft Blog</title>
+    <style>
+        :root {
+            --bg: #f3f6fc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #5b6e8c;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --pill-bg: #eef2ff;
+            --radius: 20px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px;
+            color: var(--text);
+        }
+        .container { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+        .top-bar {
+            background: var(--card-bg); border-radius: 28px; padding:14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .logo a {
+            font-size:1.35rem; font-weight:650; text-decoration:none;
+            background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .nav-links { display:flex; gap:12px; }
+        .nav-links a {
+            background:var(--pill-bg); padding:8px 18px; border-radius:40px;
+            text-decoration:none; color:var(--text); font-weight:500; font-size:0.85rem;
+            transition:0.2s;
+        }
+        .nav-links a:hover { background:#dde4ff; }
+        .article {
+            background: var(--card-bg); border-radius: 24px; padding:28px;
+            box-shadow: var(--shadow);
+        }
+        .article h1 { font-size:1.8rem; margin-bottom:8px; }
+        .article .date { color: var(--text-secondary); font-size:0.85rem; margin-bottom:24px; }
+        .article p { line-height:1.8; margin-bottom:1.2em; color: #334155; }
+        .article h2 { margin:1.5em 0 0.5em; font-size:1.3rem; }
+        .article ul { margin:0.8em 0; padding-left:24px; }
+        .article ul li { margin-bottom:0.5em; color: #334155; }
+        .footer {
+            text-align: center; font-size:0.75rem; color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="logo"><a href="../index.html">✂️ CropCraft · 裁剪工坊</a></div>
+        <div class="nav-links">
+            <a href="../blog.html">← 返回博客</a>
+            <a href="../index.html">🔧 回到工具</a>
+        </div>
+    </div>
+
+    <article class="article">
+        <h1>设计美观水印的5个技巧</h1>
+        <div class="date">2026年6月8日</div>
+
+        <p>水印是保护图片版权、传递品牌信息的重要手段，但生硬的水印往往会破坏画面的美感。用好 CropCraft 裁剪工坊的水印功能，你可以轻松设计出既美观又有效的专属标识。以下是五个实用技巧。</p>
+
+        <h2>1. 控制透明度，融入画面</h2>
+        <p>透明度是决定水印是否“刺眼”的关键。建议将透明度设置在 <strong>30%～70%</strong> 之间，让水印若隐若现，既不影响观看，又足以声明版权。在工坊中，直接拖动透明度滑块即可实时预览效果。</p>
+
+        <h2>2. 选择与背景对比适中的颜色</h2>
+        <p>白色水印适合大多数暗色或彩色背景，但在浅色图片上会几乎消失。此时可以改用黑色或灰色，或者从图片中提取一个反色。工坊内置了拾色器，你可以自由选择任何颜色。</p>
+
+        <h2>3. 文字简洁，字体清晰</h2>
+        <p>水印文字不宜过长。一个简短的品牌名、网址或“© 作者名”就足够。同时，工坊使用系统无衬线字体，保证了不同设备上的显示一致性。</p>
+
+        <h2>4. 善用位置与旋转，增加设计感</h2>
+        <p>角落放置是最安全的方式，但有时候将水印稍稍旋转（例如 -15° 到 15°）并置于画面偏中央的位置，能营造出专业摄影作品的水印风格。你可以从预设位置中快速选择，也可以直接拖拽水印到任意位置。</p>
+
+        <h2>5. 根据输出尺寸调整字号</h2>
+        <p>水印的显示大小取决于图片的像素尺寸。输出大图时，可能需要增大字号（例如 36px 以上）；小图则适当减小。工坊右侧会实时显示裁剪输出尺寸，方便你根据数值调整水印大小。</p>
+
+        <p>现在打开 <a href="../index.html">裁剪工坊</a>，动手设计一个属于你自己的专属水印吧！</p>
+    </article>
+
+    <div class="footer">
+        © 2026 CropCraft. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

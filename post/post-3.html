@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+    <title>JPEG vs PNG vs WebP：如何选择输出格式 – CropCraft Blog</title>
+    <style>
+        :root {
+            --bg: #f3f6fc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #5b6e8c;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --pill-bg: #eef2ff;
+            --radius: 20px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px;
+            color: var(--text);
+        }
+        .container { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+        .top-bar {
+            background: var(--card-bg); border-radius: 28px; padding:14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .logo a {
+            font-size:1.35rem; font-weight:650; text-decoration:none;
+            background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .nav-links { display:flex; gap:12px; }
+        .nav-links a {
+            background:var(--pill-bg); padding:8px 18px; border-radius:40px;
+            text-decoration:none; color:var(--text); font-weight:500; font-size:0.85rem;
+            transition:0.2s;
+        }
+        .nav-links a:hover { background:#dde4ff; }
+        .article {
+            background: var(--card-bg); border-radius: 24px; padding:28px;
+            box-shadow: var(--shadow);
+        }
+        .article h1 { font-size:1.8rem; margin-bottom:8px; }
+        .article .date { color: var(--text-secondary); font-size:0.85rem; margin-bottom:24px; }
+        .article p { line-height:1.8; margin-bottom:1.2em; color: #334155; }
+        .article h2 { margin:1.5em 0 0.5em; font-size:1.3rem; }
+        .article table {
+            width:100%; border-collapse: collapse; margin:1em 0;
+            font-size:0.9rem;
+        }
+        .article th, .article td {
+            border:1px solid var(--border); padding:10px 12px; text-align:left;
+        }
+        .article th {
+            background:var(--pill-bg); font-weight:600; color:var(--text);
+        }
+        .article td { color:#334155; }
+        .footer {
+            text-align: center; font-size:0.75rem; color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="logo"><a href="../index.html">✂️ CropCraft · 裁剪工坊</a></div>
+        <div class="nav-links">
+            <a href="../blog.html">← 返回博客</a>
+            <a href="../index.html">🔧 回到工具</a>
+        </div>
+    </div>
+
+    <article class="article">
+        <h1>JPEG vs PNG vs WebP：如何选择输出格式</h1>
+        <div class="date">2026年6月5日</div>
+
+        <p>在裁剪工坊中，你可以将图片保存为 JPEG、PNG 或 WebP 格式。但面对这三种格式，究竟该如何选择？本文将简要对比它们的特点，并给出适用场景建议。</p>
+
+        <h2>格式对比一览</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>格式</th>
+                    <th>压缩方式</th>
+                    <th>透明度</th>
+                    <th>文件大小</th>
+                    <th>最佳场景</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>JPEG</strong></td>
+                    <td>有损压缩</td>
+                    <td>不支持</td>
+                    <td>较小</td>
+                    <td>照片、复杂色彩图片</td>
+                </tr>
+                <tr>
+                    <td><strong>PNG</strong></td>
+                    <td>无损压缩</td>
+                    <td>支持</td>
+                    <td>较大</td>
+                    <td>Logo、图标、需要透明背景</td>
+                </tr>
+                <tr>
+                    <td><strong>WebP</strong></td>
+                    <td>有损/无损均可</td>
+                    <td>支持</td>
+                    <td>最小</td>
+                    <td>网页性能优化、兼顾透明与体积</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>1. JPEG：照片的最佳搭档</h2>
+        <p>JPEG 通过丢弃人眼不易察觉的色彩细节来大幅度减小文件体积。对于色彩丰富的照片或渐变图，JPEG 能在保持肉眼观看质量的同时显著压缩。在工坊中，你可以通过画质滑块在 10%～100% 之间调节，建议日常使用 85%～95%。需要注意的是，JPEG 不支持透明背景，保存后透明区域会变成白色。</p>
+
+        <h2>2. PNG：追求无损与透明</h2>
+        <p>PNG 采用无损压缩，所有像素信息都被完整保留，因此非常适合需要再次编辑的图片、文字截图、Logo 以及任何需要透明背景的场景。代价是文件体积通常比 JPEG 大数倍。工坊中选择 PNG 时，画质滑块会自动禁用，确保输出始终为最佳质量。</p>
+
+        <h2>3. WebP：现代网页的优选</h2>
+        <p>WebP 是 Google 推出的现代格式，它兼顾了有损压缩的小体积和无损压缩的高保真，同时支持透明度。在相同画质下，WebP 文件通常比 JPEG 小 25%～35%，比 PNG 小更多。如果你的图片主要用于网页展示，WebP 是目前最值得推荐的格式。目前主流浏览器均已支持。</p>
+
+        <p>下次使用 <a href="../index.html">裁剪工坊</a> 时，不妨根据你的实际用途，试试切换这三种格式，并观察预估文件大小的变化，找到最适合你的输出方案。</p>
+    </article>
+
+    <div class="footer">
+        © 2026 CropCraft. All rights reserved.
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232563eb'/%3E%3Cg fill='none' stroke='white' stroke-width='6' stroke-linecap='round'%3E%3Ccircle cx='35' cy='35' r='12'/%3E%3Ccircle cx='65' cy='65' r='12'/%3E%3Cline x1='44' y1='44' x2='56' y2='56'/%3E%3Cline x1='50' y1='30' x2='50' y2='70'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml">
+    <title>如何用裁剪工坊快速统一图片比例 – CropCraft Blog</title>
+    <style>
+        :root {
+            --bg: #f3f6fc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #5b6e8c;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --pill-bg: #eef2ff;
+            --radius: 20px;
+            --shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 24px 20px;
+            color: var(--text);
+        }
+        .container { max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+        .top-bar {
+            background: var(--card-bg); border-radius: 28px; padding:14px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow);
+        }
+        .logo a {
+            font-size:1.35rem; font-weight:650; text-decoration:none;
+            background: linear-gradient(135deg, #1f2b3c, #3b4f6b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .nav-links { display:flex; gap:12px; }
+        .nav-links a {
+            background:var(--pill-bg); padding:8px 18px; border-radius:40px;
+            text-decoration:none; color:var(--text); font-weight:500; font-size:0.85rem;
+            transition:0.2s;
+        }
+        .nav-links a:hover { background:#dde4ff; }
+        .article {
+            background: var(--card-bg); border-radius: 24px; padding:28px;
+            box-shadow: var(--shadow);
+        }
+        .article h1 { font-size:1.8rem; margin-bottom:8px; }
+        .article .date { color: var(--text-secondary); font-size:0.85rem; margin-bottom:24px; }
+        .article p { line-height:1.8; margin-bottom:1.2em; color: #334155; }
+        .article h2 { margin:1.5em 0 0.5em; font-size:1.3rem; }
+        .footer {
+            text-align: center; font-size:0.75rem; color: var(--text-secondary);
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <div class="logo"><a href="../index.html">✂️ CropCraft · 裁剪工坊</a></div>
+        <div class="nav-links">
+            <a href="../blog.html">← 返回博客</a>
+            <a href="../index.html">🔧 回到工具</a>
+        </div>
+    </div>
+
+    <article class="article">
+        <h1>如何用裁剪工坊快速统一图片比例</h1>
+        <div class="date">2026年6月10日</div>
+
+        <p>在社交媒体、电商或作品集排版中，统一图片比例是保持视觉一致性的关键。CropCraft 裁剪工坊提供了简单高效的比例锁定功能，让你一次搞定所有图片。</p>
+
+        <h2>1. 选择固定比例</h2>
+        <p>上传图片后，在右侧的“比例”下拉菜单中选择预设比例，例如正方形 1:1、经典 4:3 或宽屏 16:9。裁剪框会自动锁定该比例，随意拖拽缩放都不会变形。</p>
+
+        <h2>2. 自定义比例</h2>
+        <p>如果预设中找不到你需要的比例，点击“自定义”，输入宽度和高度数值，工坊会立即为你计算并锁定该宽高比。这对于特殊尺寸（如微信公众号封面 2.35:1）非常实用。</p>
+
+        <h2>3. 微调与输出</h2>
+        <p>你还可以使用旋转工具将图片向左或向右旋转90度，或者手动拖拽裁剪框微调构图。调整完毕后，选择输出格式（JPEG/PNG/WebP），点击“裁剪并转换”即可获得统一比例的成品。</p>
+
+        <p>现在打开 <a href="../index.html">裁剪工坊</a>，试试用固定比例打造你的专业图片集吧！</p>
+    </article>
+
+    <div class="footer">
+        © 2026 CropCraft. All rights reserved.
+    </div>
+</div>
+</body>
+</html>
